@@ -36,7 +36,11 @@ class UserManager(BaseUserManager,AbstractManager):
 
 
 class User(AbstractModel ,AbstractBaseUser, PermissionsMixin):
-    public_id = models.UUIDField(db_index=True, unique=True, default=uuid.uuid4, editable=False)
+    #AbstractModel에 있음 , 데이터베이스가 변경되지 않으므로 마이그레이션 할 필요 없음
+    #public_id = models.UUIDField(db_index=True, unique=True, default=uuid.uuid4, editable=False)
+    #created = models.DateTimeField(auto_now_add=True)
+    #updated = models.DateTimeField(auto_now=True)
+
     username = models.CharField(db_index=True, max_length=255, unique=True)
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
@@ -47,8 +51,6 @@ class User(AbstractModel ,AbstractBaseUser, PermissionsMixin):
     bio = models.TextField(null=True)
     avatar = models.ImageField(null=True)
 
-    created = models.DateTimeField(auto_now_add=True)
-    updated = models.DateTimeField(auto_now=True)
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']
     objects = UserManager()
