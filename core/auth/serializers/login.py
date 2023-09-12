@@ -6,13 +6,13 @@ from core.user.serializers import UserSerializer
 
 class LoginSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
-        data = super().validated_data(attrs)
+        #유효성 검사 수행한 후에 self.user 데이터에 접근할 수 있음
+        data = super().validate(attrs)
+
         refresh = self.get_token(self.user)
         data['user'] = UserSerializer(self.user).data
         data['refresh'] = str(refresh)
         data['access'] = str(refresh.access_token)
 
-        if api_settings.UPDATE_LAST_LOGIN:
-            update_last_login(None, self.user)
-
+        update_last_login(None, self.user)
         return data
