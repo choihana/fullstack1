@@ -4,6 +4,7 @@ from rest_framework.exceptions import ValidationError
 from core.abstract.serializers import AbstractSerializer
 from core.post.models import Post
 from core.user.models import User
+from core.user.serializers import UserSerializer
 
 
 # post 모델을 JSON 형식으로 직렬화하며, 요청된 데이터를 검증하여 유효한 경우만 저장함
@@ -25,3 +26,12 @@ class PostSerializer(AbstractSerializer):
         model = Post
         fields= [ 'id', 'author','body','edited','created','updated']
         read_only_fields = ['edited']
+
+    #auther 정보(id, username,email등) 를 json으로 다 노출
+    def to_representation(self, instance):
+        rep = super().to_representation(instance)
+        author = User.objects.get_object_by_public_id(
+            rep['author']
+        )
+        rep['author'] = UserSerializer(author).data
+        return rep
