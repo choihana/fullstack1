@@ -34,7 +34,7 @@ class PostViewSet(AbstractViewSet):
         serializer = self.get_serializer(data = request.data)
         # 시리얼라이저의 유효성 검사
         serializer.is_valid(raise_exception=True)
-        # 실제로 데이터를 생성
+        # 실제로 데이터를 생성 (새로운 객체 생성할때 호출되는 메서드, 데이터 저장하는 역할)1
         self.perform_create(serializer)
         # 생성된 데이터를 응답으로 반환
         return Response(serializer.data, status = status.HTTP_201_CREATED)
