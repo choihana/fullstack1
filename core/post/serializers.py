@@ -16,16 +16,15 @@ class PostSerializer(AbstractSerializer):
     author = serializers.SlugRelatedField(
         queryset=User.objects.all(), slug_field='public_id'
     )
+
+    liked = serializers.SerializerMethodField()
+    likes_count = serializers.SerializerMethodField
+
     # author의 유효성 검사
     def validate_author(self, value):
         if self.context['request'].user != value:
             raise ValidationError('You cant create a post for another user.')
         return value
-
-    class Meta:
-        model = Post
-        fields= [ 'id', 'author','body','edited','created','updated']
-        read_only_fields = ['edited']
 
     #auther 정보(id, username,email등) 를 json으로 다 노출
     def to_representation(self, instance):
@@ -35,3 +34,25 @@ class PostSerializer(AbstractSerializer):
         )
         rep['author'] = UserSerializer(author).data
         return rep
+
+    # post edit요청시 (put) edited 값 수정
+    def update(self, instance, validated_data):
+        if not instance.edited:
+            validated_data['edited'] = True
+        instance = super().update(instance, validated_data)
+        return instance
+
+    def get_liked(self, instance):
+        request = self.context.get('request', None)
+        if request is None or request.user.is_anonymous:
+            return False
+        return request.user.has_liked(instance)
+
+    def get_likes_count(self,instance):
+        return instance.liked_by.count()
+
+
+    class Meta:
+        model = Post
+        fields= [ 'id', 'author','body','edited','created','updated','liked','likes_count']
+        read_only_fields = ['edited']

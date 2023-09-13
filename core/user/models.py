@@ -53,6 +53,12 @@ class User(AbstractModel ,AbstractBaseUser, PermissionsMixin):
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']
+
+    ## 좋아요 관련 필드 추가
+    posts_liked = models.ManyToManyField(
+        'core_post.Post', related_name='liked_by'
+    )
+
     objects = UserManager()
 
     def __str__(self):
@@ -61,3 +67,12 @@ class User(AbstractModel ,AbstractBaseUser, PermissionsMixin):
     @property
     def name(self):
         return f"{self.first_name} {self.last_name}"
+
+    def like(self, post):
+        return self.posts_liked.add(post)
+
+    def remove_like(self,post):
+        return self.posts_liked.remove(post)
+
+    def has_liked(self,post):
+        return self.posts_liked.filter(pk=post.pk).exists()
