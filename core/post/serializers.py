@@ -18,7 +18,7 @@ class PostSerializer(AbstractSerializer):
     )
 
     liked = serializers.SerializerMethodField()
-    likes_count = serializers.SerializerMethodField
+    likes_count = serializers.SerializerMethodField()
 
     # author의 유효성 검사
     def validate_author(self, value):
