@@ -26,8 +26,8 @@ deploy:
   runs-on: ubuntu-latest
   steps:
     -name: Deploying Application on Server
-     uses: appleboy/ssh-action@master
-     with:
+    uses: appleboy/ssh-action@master
+    with:
       host: ${{ secrets.SSH_NCLOUD_IP }}
       username: ${{ secrets.SSH_NCLOUD_USER }}
       key: ${{ secrets.SSH_PRIVATE_KEY }}
