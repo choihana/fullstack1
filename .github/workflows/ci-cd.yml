@@ -33,4 +33,5 @@ deploy:
       key: ${{ secrets.SSH_PRIVATE_KEY }}
       passphrase: ''
       script: |
+        cd ~/app
         ./docker-ncloud-deploy.sh
